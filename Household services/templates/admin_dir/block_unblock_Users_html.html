@@ -1,0 +1,101 @@
+{% extends "admin_dir/admin_layout.html" %}
+
+{% block content %}
+<div class="container">  
+    <h5>Block/Unblock Users</h5>
+    <span class="badge text-bg-info">Note</span>
+    <p style="font-size:14px;color:rgb(11, 145, 247)">Service professionals can be blocked only when he has received more than 3 service complaints or has  review score less than 3<br/> 
+    Customers can be blocked only when he has made wage theft count greater or equal to 3</p>
+    <p style="background-color:rgb(128, 248, 128);padding:4px;">
+        {{ msg }}
+    </p>
+    {% if totalNoOfUsers_except_Admin_data ==0 %}
+        No users registered yet.
+    {% else %}
+        <table class="table" style="font-size:14px;">
+            <thead class="table-dark" style="font-size:10px;">
+                <tr>
+                    <th>User Id</th>
+                    <th>User Name</th>
+                    <th>Email</th>
+                    <th>User Type</th>
+                    <th>Approval Status</th>
+                    <th>Block Status</th>
+                    <th>Service Complaints Count</th>
+                    <th>Review Score</th>
+                    <th>Wage Theft Complaints Count</th>
+                    <th>Admin Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in allUsersRows_exceptAdmin_data %}
+                    <tr>
+                        <td>{{ user.user_id_col }}</td>
+                        <td>{{ user.user_name_col }}</td>
+                        <td>{{ user.email_col }}</td>
+                        <td>{{ user.user_type_col }}</td>
+                        <td>
+                            {% if user.user_type_col=="customer" %}
+                                <span class="badge text-bg-secondary">Approval Not Required </span>
+                            {% elif user.user_type_col=="service professional" %}
+                                <!--reaching to service professional table via user.service_professional_table then accessing is_approved_col-->
+                                {% if user.service_professional_table.is_approved_col==True %}
+                                    <span class="badge text-bg-success"><i class="bi bi-person-check"></i></i>  Approved </span>
+                                
+                                {% elif user.service_professional_table.is_approved_col==False %}
+                                    <span class="badge text-bg-danger">Approval Pending/Disapproved </span>
+                                
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.block_status_col == "blocked/inactive" %}<!--make it red -->
+                                <span class="badge text-bg-danger"> <i class="bi bi-person-fill-slash"></i>{{ user.block_status_col }} </span>
+                            {% elif user.block_status_col == "unblocked/active" %}<!--make it green -->
+                                <span class="badge text-bg-success">  {{ user.block_status_col }} </span>
+                            {% endif %} 
+                        </td>
+                        <td>
+                            {% if user.user_type_col == "service professional" %}
+                                {{ user.service_professional_table.service_complaints_count_col }}
+                            {% else %}
+                                <span class="badge text-bg-secondary">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.user_type_col == "service professional" %}
+                                {{ user.service_professional_table.review_score_col }}
+                            {% else %}
+                                <span class="badge text-bg-secondary">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            
+                            {% if user.user_type_col == "customer" %}
+                                {{ user.customer_table.wage_theft_count_col }}
+                            {% else %}
+                                <span class="badge text-bg-secondary">N/A</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if user.block_status_col == "unblocked/active" %}
+                                {% if user.user_type_col == "service professional" %}
+                                    <a href="/block_service_professional_route/{{ user.user_id_col }}" class="btn btn-danger" style="font-size:10px;"><i class="bi bi-ban"></i> Block Service Professional</a>
+                                {% elif user.user_type_col == "customer" %}
+                                    <a href="/block_customer_route/{{ user.user_id_col }}" class="btn btn-danger" style="font-size:10px;"><i class="bi bi-ban"></i> Block Customer</a>
+                                {% endif %}
+                            {% elif user.block_status_col == "blocked/inactive" %}
+                                {% if user.user_type_col == "service professional" %}
+                                    <a href="/unblock_service_professional_route/{{ user.user_id_col }}" class="btn btn-success" style="font-size:10px;">Unblock Service Professional</a>
+                                {% elif user.user_type_col == "customer" %}
+                                    <a href="/unblock_customer_route/{{ user.user_id_col }}" class="btn btn-success" style="font-size:10px;">Unblock Customer</a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

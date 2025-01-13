@@ -1,0 +1,204 @@
+{% extends "admin_dir/admin_layout.html" %}
+{% block content %}
+<div class="container">
+<form action="/admin/search_by_route" method="post">
+    <table>
+        <tr>
+            <td>
+                <select class="form-select" name="ddlSearchBy" required>
+                    <option value="" disabled selected>Search By:</option>
+                    <option value="Service_Name">By Service Name</option>
+                    <option value="Professional_Name">By Professional Name</option>
+                    <option value="Customer_Name">By Customer Name</option>
+                    <option value="professional_Location">By Professional Location</option>
+                    <option value="professional_PinCode">By Professional Pincode</option>
+                    <option value="customer_Location">By Customer Location</option>
+                    <option value="customer_PinCode">By Customer Pincode</option>
+                    
+                    <option value="All_Accepted_Request">All Accepted Request</option>
+                    <option value="All_Denied_Request">All Denied Request</option>
+                    <option value="All_Completed_Service">All Completed Service</option>
+                    <option value="All_Uncompleted_Service"> All Uncompleted Service</option>
+                </select>
+            </td>
+            <td>
+                <input class="form-control" type="text" name="inpSearchKeyword" placeholder="Search..." >
+            </td>
+            <td>
+                
+                    <input type="submit" class="btn btn-secondary" value="Search">
+                
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:11px;color:dodgerblue;" >
+                <ul>
+                    <li>When you select By Service Name,enter name of service</li>
+                    <li>When you select By Professional Name,enter name of service professional</li>
+                    <li>When you select By Customer Name,enter name of  customer</li>
+                    <li>When you select By By Professional Location,enter location of service professional</li>
+                    <li>When you select By By Professional Pincode,enter pincode of service professional</li>
+                    <li>When you select By By Customer Location,enter location of customer</li>
+                    <li>When you select By By customer Pincode,enter pincode of customer</li>
+                    <li>When you select All Accepted Request or All Denied Request or All Completed Service or All Uncompleted Service , leave the textbox empty and just click the button</li>
+                </ul></td>
+        </tr>
+    </table>
+</form>
+<hr>
+
+{% if search_results %}
+    <h5>Search Results for "{{ search_keyword }}" ({{ search_by }})</h5>
+    <table class="table table-bordered table-sm table-dark">
+        <thead>
+            <tr>
+                {% if search_by == 'Service_Name' %}
+                    <th>Service Name</th>
+                    <th>Base Price</th>
+                    <th>Service Offered by</th>
+                {% elif search_by == 'Professional_Name' %}
+                    <th>Professional Name</th>
+                    <th>Phone</th>
+                    <th>Location</th>
+                    <th>Pin</th>
+                    <th>is approved</th>
+                    <th>block status</th>
+                {% elif search_by == 'Customer_Name' %}
+                    <th>Customer Name</th>
+                    <th>Phone</th>
+                    <th>Location</th>
+                    <th>Pin</th>
+                    
+                {% elif search_by == 'customer_Location' or search_by == 'customer_PinCode' %}
+                    <th>Customer Name</th>
+                    <th>Location</th>
+                    <th>Pincode</th>
+                    <th>Phone</th>
+                    
+
+                {% elif search_by == 'professional_Location' or search_by == 'professional_PinCode' %}
+                    <th>Professional Name</th>
+                    <th>Location</th>
+                    <th>Pincode</th>
+                    <th>Phone</th>
+                    <th>Service Offered</th>
+                    <th>Approval status</th>
+                    <th>Block status</th>
+                    
+
+                
+                    
+                {% elif search_by == 'All_Accepted_Request' or search_by == 'All_Denied_Request' or search_by == 'All_Completed_Service' or search_by == 'All_Uncompleted_Service' %}
+                    <th>Service Name</th>
+                    <th>Customer Name</th>
+                    <th>Professional Name</th>
+                    <th>Service Date</th>
+                    <th>Customer remarks</th>
+                    <th>Accepted/Denied Status</th>
+                    <th>Completion Status</th>
+                
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for result in search_results %}
+                <tr>
+                    {% if search_by == 'Service_Name' %}
+                        <td>{{ result.service_name_col }}</td>
+                        <td>{{ result.base_price_col }}</td>
+                        <td>{{ result.service_professional_table.users_table.user_name_col }}</td>
+                    {% elif search_by == 'Professional_Name' %}
+                        <td>{{result.users_table.user_name_col}}</td>
+                        <td>{{result.phone_col}}</td>
+                        <td>{{result.location_col}}</td>
+                        <td>{{result.pin_col}}</td>
+                        <td>
+                            {% if result.is_approved_col==True : %}
+                                <span class="badge text-bg-success">Approved</span>
+                            {% else: %}
+                                <span class="badge text-bg-danger">Approval Pending/Disapproved</span>
+                            {%endif%}
+                        </td>
+                        <td>
+                            {% if result.users_table.block_status_col=="unblocked/active": %}
+                                <span class="badge text-bg-success">unblocked/active</span>
+                            {% else: %}
+                                <span class="badge text-bg-danger">Blocked/Inactive</span>
+                            {%endif%}
+                            
+                    {% elif search_by == 'Customer_Name' %}
+                        
+                        <td>{{ result.users_table.user_name_col }}</td>
+                        <td>{{ result.phone_col }}</td>
+                        <td>{{ result.location_col }}</td>
+                        <td>{{ result.pin_col }}</td>
+                        
+                    {% elif search_by == 'customer_Location' or search_by == 'customer_PinCode' %}
+                        <td>{{ result.users_table.user_name_col }}</td>
+                        <td>{{ result.location_col }}</td>
+                        <td>{{ result.pin_col }}</td>
+                        <td>{{ result.phone_col }}</td>
+                        
+                    
+                    {% elif search_by == 'professional_Location' or search_by == 'professional_PinCode' %}
+                                         
+                       
+                        <td>{{ result.users_table.user_name_col }}</td>
+                        <td>{{ result.location_col }}</td>
+                        <td>{{ result.pin_col }}</td>
+                        <td>{{ result.phone_col }}</td>
+                        <td>{{ result.services_table.service_name_col }}</td>
+                        
+                        <td>
+                            {% if result.is_approved_col==True : %}
+                                <span class="badge text-bg-success">Approved</span>
+                            {% else: %}
+                                <span class="badge text-bg-danger">Approval Pending/Disapproved</span>
+                            {%endif%}
+                        </td>
+                        <td>
+                            {% if result.users_table.block_status_col=="unblocked/active": %}
+                                <span class="badge text-bg-success">unblocked/active</span>
+                            {% else: %}
+                                <span class="badge text-bg-danger">Blocked/Inactive</span>
+                            {%endif%}
+                        </td>
+                    
+                    {% elif search_by == 'All_Accepted_Request' or search_by == 'All_Denied_Request' or search_by == 'All_Completed_Service' or search_by == 'All_Uncompleted_Service' %}
+                      
+                        <td>{{ result.services_table.service_name_col }}</td>
+                        <td>{{ result.customers_table.users_table.user_name_col }}</td>
+                        <td>{{ result.service_professionals_table.users_table.user_name_col }}</td>
+                        <td>{{ result.date_of_service_wanted_col }}</td>
+                        <td>{{ result.customers_remarks_instruction_col }}</td>
+                        <td>
+                            {% if result.is_accepted_by_service_professional_col==True: %}
+                                <span class="badge text-bg-success">Request Accepted by Professional</span>
+                            {% else: %}
+                                <span class="badge text-bg-danger">Request Denied by Professional</span>
+                            {%endif%}
+                            
+                        
+                        <td>
+                            {% if result.completion_status_col=="completed": %}
+                                <span class="badge text-bg-success">Service Request Completed/Closed</span>
+                            {% elif result.completion_status_col=="not completed": %}
+                                <span class="badge text-bg-danger">Service Request Not Completed</span>
+                            {%endif%}
+                        </td>
+
+                    
+
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <h3>No results found for "{{ search_keyword }}"</h3>
+{% endif %}
+
+</div>
+
+
+{% endblock %}

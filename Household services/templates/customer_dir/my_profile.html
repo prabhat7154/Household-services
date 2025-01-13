@@ -1,0 +1,38 @@
+{% extends 'customer_dir/customer_layout.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>My Profile</h3>
+    {% if that_customer and that_users %}
+        <form action="{{ url_for('fun_update_profile') }}" method="post">
+            <div>
+                <label>Name</label>
+                <input type="text" class="form-control" value="{{ that_users.user_name_col }}" name="inpName" required>
+            </div>
+            
+            <div>
+                <label>Phone</label>
+                <input type="number" class="form-control" value="{{ that_customer.phone_col }}" name="inpPhone" required>
+            </div>
+            <div>
+                <label>Location</label>
+                <input type="text" class="form-control" name="inpLocation" value="{{ that_customer.location_col }}" required>
+            </div>
+            <div>
+                <label>Pin Code</label>
+                <input type="number" class="form-control" name="inpPin" value="{{ that_customer.pin_col }}" required>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary w-100 mt-4">Update</button>
+            </div>
+        </form>
+        {% if msg %}
+            <div class="alert alert-success mt-3">{{ msg }}</div>
+        {% endif %}
+    {% else %}
+        <div class="alert alert-danger">Profile data not found in database.</div>
+    {% endif %}
+</div>
+{% endblock %}

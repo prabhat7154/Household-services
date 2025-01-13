@@ -1,0 +1,166 @@
+{% extends 'customer_dir/customer_layout.html' %}
+{% block title %}My Services{% endblock %}
+
+{% block content %}
+<h4>My Services</h4>
+<h5 class="bg-danger">All Pending Service Requests</h5>
+{% if Pending_service_request %}
+    <table class="table table-sm table-dark table-bordered table-hover">
+
+        <thead>
+            <tr class="bg-primary">
+                <th></th>
+                <th>Service Professional Details</th>
+                <th>Service Name</th>
+                <th>You Need Service on</th>
+                <th>Service Completion Status</th>
+                <th>Your remarks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service_request in Pending_service_request %}
+            <tr>
+                    <td><input type="hidden" value={{service_request.service_request_id_col}} name="inpService_request_id"></td>
+                    <td>
+                        <table class="table table-sm table-bordered table-dark caption-top">
+                            <caption class="text-center text-white"> {{ service_request.service_professionals_table.users_table.user_name_col }}</caption>
+                            
+                            <tr>
+                                <th>Ph:</th>
+                                <th>Email:</th>
+                                <th>Exp:</th>
+                                
+                            </tr>
+                            <tr>
+                                <td>{{service_request.service_professionals_table.phone_col}}</td>
+                                <td>{{service_request.service_professionals_table.users_table.email_col}}</td>
+                                <td>{{service_request.service_professionals_table.experience_col}}</td>
+                                
+                        </table>
+                        
+                    </td>
+                    <td>{{ service_request.services_table.service_name_col }}</td>
+                    <td>{{ service_request.date_of_service_wanted_col }}</td>
+                    <td><span class="badge text-bg-danger">{{ service_request.completion_status_col }}</span></td>
+                    <td>{{ service_request.customers_remarks_instruction_col }}</td>
+                    <td>
+                        <a href="/open_edit_service_request_route/{{ service_request.service_request_id_col }}" class="btn btn-success">
+                            <i class="bi bi-pencil-square"></i> Edit/Reschedule Service Request
+                        </a>
+                        <a href="/cancel_service_request_route_route/{{ service_request.service_request_id_col }}" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Cancel Service Request
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+{%else%}
+    <p>You have No Pending service request </p>
+{% endif%}
+
+{% if list_of_all_accepted_denied_ServiceRequestsrecords  %}
+    <h5 class="bg-danger">Accepted/Denied Service Request</h5>
+    <table class="table table-sm table-dark table-bordered">
+
+        <thead>
+            <tr class="bg-primary">
+                <th></th>
+                <th>Service Name</th>
+                <th>Servicing Date</th>
+                <th>Service Professional Name</th>
+                <th>Your remarks</th>
+                <th>Request Accepted/Denied by Professional ?</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for service_request in list_of_all_accepted_denied_ServiceRequestsrecords %}
+            <tr>
+                    <td><input class="form-control" type="hidden" value={{service_request.service_request_id_col}} name="inpService_request_id"></td>
+                    
+                    <td>{{ service_request.services_table.service_name_col }}</td>
+                    <td>{{ service_request.date_of_service_wanted_col }}</td>
+                    <td>{{ service_request.services_table.service_professional_table.users_table.user_name_col }}</td>
+                    <td>{{ service_request.customers_remarks_instruction_col }}</td>
+                    <td>
+                        {%  if service_request.is_accepted_by_service_professional_col ==None: %} 
+                            <span class="badge text-bg-warning">Wait for Professional response</span>
+                        {%  elif service_request.is_accepted_by_service_professional_col ==True %} 
+                            <span class="badge text-bg-success">Accepted by Service Professional</span>
+                        {%  elif service_request.is_accepted_by_service_professional_col ==False %} 
+                            <span class="badge text-bg-danger">Denied by Service Professional</span>
+                        {% endif %}
+                    </td>
+
+                    
+                    
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+{%else%}
+<h5 class="bg-success">{{msg}}</h5>
+{%endif%}
+<h5 class="bg-success">All Completed Service Requests</h5>
+
+{% if Finished_service_request %}
+
+    <table class="table table-sm table-dark table-bordered table-hover">
+
+        <thead>
+            <tr class="bg-primary">
+                <th></th>
+                <th>Service Professional Details</th>
+                <th>Service Name</th>
+                <th>Serviced On</th>
+                <th>Service Completion Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service_request in Finished_service_request %}
+            <tr>
+                    <td><input type="hidden" value={{service_request.service_request_id_col}} name="inpService_request_id"></td>
+                    <td>
+                        <table class="table table-sm table-bordered table-dark caption-top">
+                            <caption class="text-center text-white"> {{ service_request.service_professionals_table.users_table.user_name_col }}</caption>
+                            
+                            <tr>
+                                <th>Ph:</th>
+                                <th>Email:</th>
+                                <th>Exp:</th>
+                                
+                            </tr>
+                            <tr>
+                                <td>{{service_request.service_professionals_table.phone_col}}</td>
+                                <td>{{service_request.service_professionals_table.users_table.email_col}}</td>
+                                <td>{{service_request.service_professionals_table.experience_col}}</td>
+                                
+                        </table>
+                        
+                    </td>
+                    <td>{{ service_request.services_table.service_name_col }}</td>
+                    <td>{{ service_request.date_of_service_wanted_col }}</td>
+                    <td><span class="badge text-bg-success">{{ service_request.completion_status_col }}</span></td>
+                    <td>
+                        <a href="/open_review_rating_route/{{ service_request.service_request_id_col }}" class="btn btn-success">
+                            <i class="bi bi-pencil-square"></i> Give Review and Rating
+                        </a>
+
+                    </td>
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+{%else%}
+    <p>We think you are new customer. </p>
+{% endif%}
+
+
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'customer_dir/customer_layout.html' %}
+{% block title %}Your Cart{% endblock %}
+
+{% block content %}
+<h4>My Cart</h4>
+{{msg}}
+{% if carts_list_rows %}
+<form method="POST" action="/customer/create_service_request_route/{{ customer_id_data }}">
+    <table class="table table-sm table-dark">
+        <thead>
+            <tr>
+                <th>Service Name</th>
+                <th>Service Description</th>
+                <th>Service Professional</th>
+                <th>You Need Service on</th>
+                <th>Your Instruction</th>
+                <th>Price</th>
+                <!-- <th style="background-color: white;color:red;border: none;">Remove</th> -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for cart in carts_list_rows %}
+                {% for service in cart.services_table %}
+                    <tr>    
+                        <td>{{ service.service_name_col }}</td>
+                        <td>{{ service.description_col[:30] + '...' if service.description_col|length > 30 else service.description_col }}</td>
+                        <td>{{ cart.service_professionals_table.users_table.user_name_col }}</td>
+                        <td>{{ cart.service_required_on_date_col }}</td>
+                        <td>
+                            
+                            {{ cart.customers_remarks_instruction_col }}</td>
+                        <td>Rs. {{ service.base_price_col }}</td>
+                       <!-- <td style="background-color: white;border: none;">
+                            <a href="/remove_item_from_cart_route/{{service.service_id_col}}" class="btn btn-danger"><i class="bi bi-trash"></i></a>
+                        </td>-->
+
+                    
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            <tr>
+                <td style="color:red;">Pay the service professional once they fulfill your service request.</td>
+                <td colspan="4" style="text-align: right;color:greenyellow;"><strong style="color:red;"> COD |</strong><strong>Total Price </td>
+                <td >Rs. {{ totalPayableAmt }}</td>
+
+                
+            </tr>
+        </tbody>
+    </table>
+
+
+    <a href="/customer/continue_shopping_route" class="btn btn-primary"><i class="bi bi-arrow-left-circle"></i> Continue Shopping</a>
+    
+    <a href="/customer/clear_carts_route/{{ customer_id_data }}" class="btn btn-danger">Clear Cart <i class="bi bi-trash"></i></a>
+    
+    <button type="submit" class="btn btn-success">Create Request <i class="bi bi-arrow-right-circle"></i></button>
+
+</form>
+    
+
+
+    
+
+    
+    
+
+{% else %}
+    <p>Your cart is empty.</p>
+    <img src="static/images/cart_empty.png" alt="Cart"/>
+    <a href="/continue_shopping_route" class="btn btn-primary">Add items to your cart</a>
+{% endif %}
+
+{% endblock %}

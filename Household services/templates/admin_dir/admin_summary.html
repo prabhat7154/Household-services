@@ -1,0 +1,11 @@
+{% extends "admin_dir/admin_layout.html" %}
+{% block content %}
+
+    <div class="container">
+        {%if error_msg %}
+          {{error_msg}}
+        {%else:%}
+            <img src="{{ url_for('static', filename=graph_image) }}">
+        {%endif%}
+    </div>
+{% endblock %}

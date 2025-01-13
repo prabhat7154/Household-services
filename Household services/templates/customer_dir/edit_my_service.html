@@ -1,0 +1,45 @@
+{% extends 'customer_dir/customer_layout.html' %}
+{% block title %}My Services{% endblock %}
+
+{% block content %}
+
+{% if service_request_obj  %}
+    <h5 class="bg-danger">Edit Pending Service Request</h5>
+    <table class="table table-sm table-dark table-bordered">
+
+        <thead>
+            <tr class="bg-primary">
+                <th></th>
+                <th>Service Name</th>
+                <th>New Servicing Date</th>
+                <th>Your remarks</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for service_request in service_request_obj %}
+            <tr>
+                    <td><input class="form-control" type="hidden" value={{service_request.service_request_id_col}} name="inpService_request_id"></td>
+                    
+                    <td>{{ service_request.services_table.service_name_col }}</td>
+
+                    <form action="/edit_and_save_service_request_route/{{ service_request.service_request_id_col}}" method="post">
+                        <td><input class="form-control" type="date" name="inpDateOfServiceWanted"></td>
+                        <td><textarea class="form-control" name="inpCustomerRemarks">{{ service_request.customers_remarks_instruction_col }}</textarea></td>
+                        <td>
+                            <input class="form-control bg-info" type="submit" value="Update" class="btn btn-success">
+                        </td>
+                    </form>
+                    
+                </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+{%else%}
+<h5 class="bg-success">{{msg}}</h5>
+{% endif %}
+
+
+
+{% endblock %}

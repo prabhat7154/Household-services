@@ -1,0 +1,52 @@
+/* Global styles */
+body {
+    margin: 0;
+    padding: 0;
+
+
+}
+
+
+
+/* Main container styling */
+.main {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+
+    width: 350px;
+    margin-top: 20px; /* Adds space below the navigation */
+}
+
+/* Form label styling */
+.main label {
+    margin-bottom: 3px;
+    color: #800d39;
+}
+
+/* Input and select styling */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Submit button styling */
+input[type="submit"] {
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    background-color: rgb(54, 255, 54);
+    color: white;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+}

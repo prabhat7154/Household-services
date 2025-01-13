@@ -1,0 +1,15 @@
+{% extends 'templates/customer_layout.html' %}
+
+{% block content %}
+    <form action="/create_service_request" method="POST">
+    <label for="service_id">Select Service</label>
+    <select name="service_id" id="service_id" required>
+        {% for service in services %}
+            <option value="{{ service.service_id_col }}">{{ service.service_name_col }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Create Service Request</button>
+</form>
+
+
+{% endblock %}

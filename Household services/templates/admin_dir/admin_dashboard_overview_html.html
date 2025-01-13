@@ -1,0 +1,185 @@
+{% extends "admin_dir/admin_layout.html" %}
+{% block content %}
+<div class="container">
+  <h4>Dashboard Overview</h4>
+  <div class="container">
+    <h5>Create Services</h5>
+    
+
+      <form action="/admin/create_service_route" method="POST" class="mb-3">
+          <table class="table table-bordered table-info">
+              <thead>
+                  <tr>
+                      <th>Service Name</th>
+                      <th>Base Price</th>
+                      <th>Time Required</th>
+                      <th>Description</th>
+                      <th>Admin Action</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td><input type="text" name="inpServiceName" placeholder="Enter Service name." required></td>
+                      <td><input type="number" name="inpBasePrice" placeholder="Enter Base price for Service" required></td>
+                      <td><input type="number" name="inpTimeRequired" placeholder="Enter Time required in hours in Servicing" required></td>
+                      <td><textarea name="inpDescription" placeholder="Enter Service description" required></textarea></td>
+                      <td><button type="submit" class="btn btn-success btn-sm"><i class="bi bi-plus-circle-dotted"></i> Create New Service</button></td>
+                  </tr>
+              </tbody>
+          </table>
+      </form>
+      
+
+      <h5 style="background-color:black;color:orangered;">All Services</h5>
+
+      <table class="table table-sm table-info table-striped">
+          <thead>
+              <tr>
+                  <th>Service ID</th>
+                  <th>Service Name</th>
+                  <th>Base Price</th>
+                  <th>Time Required</th>
+                  <th>Description</th>
+                  <th>Admin Actions</th>
+              </tr>
+          </thead>
+          <tbody>
+              
+            {% for service in services %}
+
+              <tr>
+                <form action="/admin/update_service_route/{{ service.service_id_col }}" method="post">
+                  <td><a class="badge text-bg-primary" href="/admin/service_request_associated_with_service_name_route/{{ service.service_id_col }}"">View all service requests associated with <strong style="color:red;">{{ service.service_name_col }}</strong></a></td>
+                  <td><textarea name="inpServiceName" placeholder="Enter name of Service" required>{{ service.service_name_col }} </textarea></td>
+                  <td><input style="width:90px;" type="number" value="{{ service.base_price_col }}" name="inpBasePrice" placeholder="Enter Base Price of Service" required></td>
+                  <td><input style="width:90px;" type="number" value="{{ service.time_required_col }}" name="inpTimeRequired" placeholder="Enter Time required in hours in Servicing" required></td>
+                  <td><textarea name="inpDescription" placeholder="Enter Service description" required>{{ service.description_col }}</textarea></td>
+                  <td>
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i> Update</button>
+                    <a href="/admin/delete_service_route/{{ service.service_id_col }}" class="btn btn-danger btn-sm"><i class="bi bi-trash3"></i> Delete</a>
+                  </td>
+                </form>
+
+                
+              
+              </tr>
+             
+
+
+            {% endfor %}
+        </tbody>
+      </table>
+      <hr>
+      <h5>All Service Professionals</h5>
+      {% if services_professionals != None %}
+            <table class="table table-success table-striped" style="font-size:14px;">
+                <thead class="table-dark" style="font-size:10px;">
+                    <tr>
+                        <th>service Prof ID</th>
+                        <th>User Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Location</th>
+                        <th>Service Type</th>
+                        <th>Experience</th>
+                        <th>Document</th>
+                        <th>Is Verified/Approved</th>
+                        <th>Your Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for service_professional in services_professionals %}
+                        <tr>
+                            <td>
+                                <a class="badge text-bg-primary" href="/admin/service_requested_to_service_professional_route/{{ service_professional.serviceProfessional_id_col }}">
+                                    See all services requested to <strong style="color:red;">{{ service_professional.users_table.user_name_col }}</strong>
+                                </a>
+                                
+                            </td>
+                            
+                            <td>{{ service_professional.users_table.user_name_col }}</td>
+                            <td>{{ service_professional.users_table.email_col }}</td>
+                            <td>{{ service_professional.phone_col }}</td>
+                            <td>{{ service_professional.location_col }}</td>
+                            <td>{{ service_professional.services_table.service_name_col }}</td>
+                            <td>{{ service_professional.experience_col }}</td>
+                            <td>
+                                <a href="{{ service_professional.uploaded_documents_path_col }}" target="_blank">View Document</a>
+
+                            </td>
+                            <td>
+                                {% if service_professional.is_approved_col == False %}<!--make it red -->
+                                    <span class="badge text-bg-danger"><i class="bi bi-file-earmark-excel"></i> Approval Pending/Disapproved </span>
+                                {% elif service_professional.is_approved_col == True %}<!--make it green -->
+                                    <span class="badge text-bg-success"> <i class="bi bi-file-earmark-check"></i> Verified Service Professional</span>
+                                {% endif %} 
+                            </td>
+                            <td>
+                                {% if service_professional.is_approved_col == False %} <!--means user is not verified-->
+                                    <a href="/admin/approve_service_professional_route/{{ service_professional.serviceProfessional_id_col }}" class="btn btn-success" style="font-size:10px;">Approve Him</a>     
+                                {% elif service_professional.is_approved_col == True %} <!--means user is  verified-->
+                                    <a href="/admin/disapprove_service_professional_route/{{ service_professional.serviceProfessional_id_col }}" class="btn btn-danger" style="font-size:10px;">Dis-Approve Him</a>
+                                {% endif %}
+                                <a href="/admin/delete_service_professional_route/{{ service_professional.serviceProfessional_id_col }}" class="btn btn-danger" style="font-size:10px;">Delete him</a>
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+    {% else %}
+        <p>No service professionals are yet registered.</p>
+    {% endif %}
+<hr>
+<h5>All Service Requests</h5>
+      {% if services_requests != None %}
+            <table class="table table-primary" style="font-size:14px;">
+                <thead class="table-dark" style="font-size:10px;">
+                    <tr>
+                        <th>service request ID</th>
+                        <th>Requested Service Name</th>
+                        <th>Assigned Service Prof</th>
+                        <th>Customer who requested</th>
+                        <th>Requested Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for services_request in services_requests %}
+                        <tr>
+                            <td>{{ services_request.service_request_id_col }}</td>
+                            <td><strong style="color:rgb(49, 143, 238);">{{ services_request.services_table.service_name_col |upper}}</strong></td>
+                            <td>{{ services_request.service_professionals_table.users_table.user_name_col }}</td>
+                            <td>{{ services_request.customers_table.users_table.user_name_col }}</td>
+                            <td>{{ services_request.date_of_service_wanted_col }}</td>
+                            
+                            <td>
+                                {% if services_request.is_accepted_by_service_professional_col == True:  %}
+                                        <span class="badge text-bg-success">Request Accepted</span>
+                                        {% if services_request.completion_status_col == 'not completed': %}
+                                            <span class="badge text-bg-warning">{{services_request.completion_status_col}}</span>
+                                        {% elif services_request.completion_status_col == 'completed': %}
+                                            <span class="badge text-bg-success">{{services_request.completion_status_col}}</span>
+                                        {% endif %}
+                                    {% elif services_request.is_accepted_by_service_professional_col == False: %}
+                                            <span class="badge text-bg-danger">Request Denied</span>
+                                        
+                                            
+                                {% endif %}
+                            </td>
+                            
+                            
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+    {% else %}
+        <p>No service request made till now.</p>
+    {% endif %}
+          
+</div>
+</div>
+{%endblock%}
+           

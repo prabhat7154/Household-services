@@ -1,0 +1,63 @@
+{% extends "admin_dir/admin_layout.html" %}
+{% block content %}
+<div class="container">
+    {% if that_service_professional !=None: %}
+        <h6>Showing all service requested to <strong style="color:red;">{{that_service_professional.users_table.user_name_col}}</strong> </h6>
+        <div class="container">
+            {% if service_requests_requested_to_that_service_professional !=None: %} 
+                <table class="table table-primary" style="font-size:14px;">
+                    <thead class="table-dark" style="font-size:10px;">
+                        <tr>
+                            <th>service request ID</th>
+                            <th>Service Name</th>
+                            <th>Customer Name</th>
+                            <th>Service Professional Name</th>
+                            <th>Requested Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for services_request in service_requests_requested_to_that_service_professional %}
+                            <tr>
+                                <td>{{ services_request.service_request_id_col }}</td>
+                                <td><strong style="color:rgb(49, 143, 238);">{{ services_request.services_table.service_name_col |upper}}</strong></td>
+                                <td>{{ services_request.customers_table.users_table.user_name_col }}</td>
+                                <td>{{ services_request.service_professionals_table.users_table.user_name_col }}</td>
+                                <td>{{ services_request.date_of_service_wanted_col }}</td>
+                                
+                                <td>
+                                    {% if services_request.is_accepted_by_service_professional_col == True:  %}
+                                        <span class="badge text-bg-success">Request Accepted</span>
+                                        {% if services_request.completion_status_col == 'not completed': %}
+                                            <span class="badge text-bg-warning">{{services_request.completion_status_col}}</span>
+                                        {% elif services_request.completion_status_col == 'completed': %}
+                                            <span class="badge text-bg-success">{{services_request.completion_status_col}}</span>
+                                        {% endif %}
+                                    {% elif services_request.is_accepted_by_service_professional_col == False: %}
+                                            <span class="badge text-bg-danger">Request Denied</span>
+                                        
+                                            
+                                    {% endif %}
+                                    
+                                    
+                                </td>
+                                
+                                
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else: %} 
+                <p>No service requests found for this service professional</p>
+            {% endif %}
+        </div>
+
+
+
+    {% endif %}
+
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'customer_dir/customer_layout.html' %}
+{% block title %}Rate & Review{% endblock %}
+
+{% block content %}
+<h5 class="bg-success">Rate & Review (Rating 1:Poor|Rating 5:Best)</h5>
+
+<!-- Form should wrap the entire content you want to send on submit -->
+<form action="/review_rating_route/{{ service_request.service_request_id_col }}" method="post">
+    <table class="table table-sm table-dark table-striped table-border">
+        <thead>
+            <tr class="bg-primary">
+                <th>Professional Name</th>
+                <th>Service Name</th>
+                <th>Serviced On</th>
+                <th>How much rate you will give to <strong style="color:red;"> {{ service_request.services_table.service_professional_table.users_table.user_name_col }} </strong>?</th>
+                <th>How was your experience with service professional  <strong style="color:red;"> {{ service_request.services_table.service_professional_table.users_table.user_name_col }} </strong> ?</th>
+                <th>Submit</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td> <strong style="color:rgb(55, 244, 41);">{{ service_request.services_table.service_professional_table.users_table.user_name_col }}</strong></td>
+                <td>{{ service_request.services_table.service_name_col }}</td>
+                <td>{{ service_request.date_of_service_wanted_col }}</td>
+                <td><input type="range" class="form-range" min="1" max="5" step="1" name="inpReview"></td>
+                
+                <td><input type="range" class="form-range" min="1" max="5" step="1" name="inpRating"></td>
+                
+                <td><input type="submit" value="Review and Rate now" class="btn btn-success"></td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+{% endblock %}
